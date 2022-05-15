@@ -14,8 +14,9 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
     uint256 internal fee;
     uint16 public winningTicket;
     bool private pickingWinner;
+    uint256 public game = 1;
 
-    mapping(uint16 => address) public tickets;
+    mapping(uint256 => mapping(uint16 => address)) public games;
 
     constructor(address _owner, address _token) VRFConsumerBase(0xa555fC018435bef5A13C6c6870a9d4C11DEC329C, 0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06) {
         owner = _owner;
@@ -57,12 +58,6 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
         selectWinner();
     }
 
-    function resetTickets() private {
-        for(uint8 i = 0; i < 10000; i++) {
-            tickets[i] = address(0);
-        }
-    }
-
     /**
      * @notice Functions that allows to buy lottery numbers with tokens.
      * @param _ticket Lottery number to be purchased.
@@ -70,17 +65,17 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
     function buyLottery(uint16 _ticket) public nonReentrant {
         require(!pickingWinner, "You can't buy a ticket now, we are picking a winner.");
         require(_ticket > 0 && _ticket <= 10000, "Ticket number should be more than 1 and less than 10000.");
-        require(tickets[_ticket] == address(0), "Ticket not available.");
+        require(games[game][_ticket] == address(0), "Ticket not available.");
         uint256 _userBalance = token.balanceOf(msg.sender);
         require(_userBalance >= lotteryPrize, "Insufficient Balance.");
 
         token.transferFrom(msg.sender, address(this), lotteryPrize);
 
-        tickets[_ticket] = msg.sender;
+        games[game][_ticket] = msg.sender;
     }
 
     function selectWinner() private {
-        address _winner = tickets[winningTicket];
+        address _winner = games[game][winningTicket];
         uint256 _prizePool = token.balanceOf(address(this));
 
         if(_winner != address(0)) {
@@ -93,8 +88,8 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
             token.transfer(owner, _prizePool);
         }
         
-        resetTickets();
         pickingWinner = false;
+        game++;
     }
 
     function withdrawLINK() public {
