@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 // TODO: Cambiar direcciones, keyHash y fee de VRFConsumerBase.
-contract Lottery is ReentrancyGuard, VRFConsumerBase {
+contract SmallLottery is ReentrancyGuard, VRFConsumerBase {
     address public owner;
     uint256 public lotteryPrize = 10000000000000000000;
     uint16 public lotteryNumbers = 999;
