@@ -54,7 +54,7 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
     /**
      * @notice Callback function used by VRF Coordinator.
      */
-    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+    function fulfillRandomness(bytes32, uint256 randomness) internal override {
         winningTicket = uint16((randomness % 10000) + 1);
         selectWinner();
     }
