@@ -9,6 +9,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 contract Lottery is ReentrancyGuard, VRFConsumerBase {
     address public owner;
     uint256 public lotteryPrize = 10000000000000000000;
+    uint16 public lotteryNumbers = 9999;
     IERC20 public token;
     bytes32 internal keyHash;
     uint256 internal fee;
@@ -64,7 +65,7 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
      */
     function buyLottery(uint16 _ticket) public nonReentrant {
         require(!pickingWinner, "You can't buy a ticket now, we are picking a winner.");
-        require(_ticket > 0 && _ticket <= 10000, "Ticket number should be more than 1 and less than 10000.");
+        require(_ticket > 0 && _ticket <= lotteryNumbers, "Ticket number should be more than 1 and equal or less than 9999.");
         require(games[game][_ticket] == address(0), "Ticket not available.");
         uint256 _userBalance = token.balanceOf(msg.sender);
         require(_userBalance >= lotteryPrize, "Insufficient Balance.");
