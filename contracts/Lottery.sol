@@ -75,6 +75,9 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
         games[game][_ticket] = msg.sender;
     }
 
+    /**
+     * @notice Function that selects a winner and sends the prize.
+     */
     function selectWinner() private {
         address _winner = games[game][winningTicket];
         uint256 _prizePool = token.balanceOf(address(this));
@@ -93,6 +96,9 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
         game++;
     }
 
+    /**
+     * @notice Function that allows the owner to withdraw LINK balance.
+     */
     function withdrawLINK() public {
         require(msg.sender == owner, "Only owners can call this function.");
         uint256 _contractBalance = LINK.balanceOf(address(this));
