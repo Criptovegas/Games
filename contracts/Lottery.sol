@@ -80,7 +80,7 @@ contract Lottery is ReentrancyGuard, VRFConsumerBase {
         uint256 _prizePool = token.balanceOf(address(this));
 
         if(_winner != address(0)) {
-            uint256 _fee = mulScale(_prizePool, 1000, 10000); // 1000 basis points = 10%.
+            uint256 _fee = mulScale(_prizePool, 1200, 10000); // 1200 basis points = 12%.
             uint256 _userTokens = _prizePool - _fee;
 
             token.transfer(owner, _fee);
